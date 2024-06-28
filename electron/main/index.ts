@@ -3,6 +3,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
+import { initDBHandler } from '../database/index'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -48,6 +49,7 @@ async function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
     webPreferences: {
       preload,
+      nodeIntegration: true,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // nodeIntegration: true,
 
@@ -56,6 +58,8 @@ async function createWindow() {
       // contextIsolation: false,
     },
   })
+
+  win.setMenu(null)
 
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
@@ -76,9 +80,14 @@ async function createWindow() {
     return { action: 'deny' }
   })
   // win.webContents.on('will-navigate', (event, url) => { }) #344
+  win.maximize()
 }
 
-app.whenReady().then(createWindow)
+app.whenReady()
+  .then(createWindow)
+  .then(()=>{
+    initDBHandler()
+  })
 
 app.on('window-all-closed', () => {
   win = null

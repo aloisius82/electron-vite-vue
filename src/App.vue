@@ -1,49 +1,76 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://www.electronjs.org/" target="_blank">
-      <img src="./assets/electron.svg" class="logo electron" alt="Electron logo" />
-    </a>
-    <a href="https://vitejs.dev/" target="_blank">
-      <img src="./assets/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Electron + Vite + Vue" />
-  <div class="flex-center">
-    Place static files into the <code>/public</code> folder
-    <img style="width: 2.4em; margin-left: .4em;" src="/logo.svg" alt="Logo">
-  </div>
+  <v-card>
+    <v-layout>
+      <v-app-bar color="primary" prominent>
+        <v-app-bar-nav-icon
+          variant="text"
+          @click.stop="drawer = !drawer"
+        ></v-app-bar-nav-icon>
+
+        <v-toolbar-title>POS</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <template v-if="$vuetify.display.mdAndUp">
+          <v-btn icon="mdi-magnify" variant="text"></v-btn>
+
+          <v-btn icon="mdi-filter" variant="text"></v-btn>
+        </template>
+
+        <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+      </v-app-bar>
+
+      <v-navigation-drawer
+        v-model="drawer"
+        :location="$vuetify.display.mobile ? 'bottom' : undefined"
+        temporary
+      >
+        <v-list :items="items"></v-list>
+      </v-navigation-drawer>
+
+      <v-main class="bg-grey-lighten-2" :height="mainHeight" >
+        <router-view />
+      </v-main>
+      
+    </v-layout>
+  </v-card>
 </template>
+<script lang="ts">
 
-<style>
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+const mainHeight = screen.height - 100;
+console.log(mainHeight)
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo.electron:hover {
-  filter: drop-shadow(0 0 2em #9FEAF9);
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+export default {
+  data: () => ({
+    drawer: false,
+    group: null,
+    mainHeight,
+    items: [
+      {
+        title: "Foo",
+        value: "foo",
+      },
+      {
+        title: "Bar",
+        value: "bar",
+      },
+      {
+        title: "Fizz",
+        value: "fizz",
+      },
+      {
+        title: "Buzz",
+        value: "buzz",
+      },
+    ],
+  }),
+  mounted(){
+    
+  },
+  watch: {
+    group() {
+      this.drawer = false;
+    },
+  },
+};
+</script>
